@@ -4,6 +4,16 @@ var keys = require("keys"),
     isArrayLike = require("is_array_like");
 
 
+module.exports = reduce;
+
+
+function reduce(object, callback, accumulator, thisArg) {
+    callback = isNullOrUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3);
+    return isArrayLike(object) ?
+        reduceArray(object, callback, arguments.length < 3) :
+        reduceObject(object, callback, arguments.length < 3);
+}
+
 function reduceArray(array, callback, accumulator, initFromArray) {
     var length = array.length,
         i = -1,
@@ -38,10 +48,3 @@ function reduceObject(object, callback, accumulator, initFromArray) {
 
     return accumulator;
 }
-
-module.exports = function reduce(object, callback, accumulator, thisArg) {
-    callback = isNullOrUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3);
-    return isArrayLike(object) ?
-        reduceArray(object, callback, arguments.length < 3) :
-        reduceObject(object, callback, arguments.length < 3);
-};
